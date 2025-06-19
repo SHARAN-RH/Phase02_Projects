@@ -1,0 +1,35 @@
+---
+- name: Create build context directory
+  file:
+    path: "{{ role_path }}/build"
+    state: directory
+
+- name: Render Prometheus config
+  template:
+    src: prometheus.yml.j2
+    dest: "{{ role_path }}/build/prometheus.yml"
+
+- name: Render Prometheus Dockerfile
+  template:
+    src: Dockerfile.j2
+    dest: "{{ role_path }}/build/Dockerfile"
+
+- name: Build Prometheus Docker image
+  docker_image:
+    name: custom_prometheus:latest
+    source: build
+    build:
+      path: "{{ role_path }}/build"
+    force_source: true
+
+- name: Remove existing Prometheus container
+  command: docker rm -f prometheus
+  ignore_errors: true
+
+- name: Run Prometheus container
+  command: >
+    docker run -d
+      --name prometheus
+      --network monitoring_net
+      -p {{ prometheus_port }}:{{ prometheus_port }}
+      custom_prometheus:latest

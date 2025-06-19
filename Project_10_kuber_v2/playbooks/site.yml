@@ -1,0 +1,13 @@
+- hosts: monitoring
+  become: true
+  roles:
+    - role: microservices
+      tags: microservices
+    - role: node_exporter
+      tags: node_exporter
+    - role: prometheus
+      tags: prometheus
+    - role: grafana
+      tags: grafana
+    - role: kubernetes
+      tags: kubernetes

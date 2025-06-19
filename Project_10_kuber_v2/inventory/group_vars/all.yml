@@ -1,0 +1,15 @@
+---
+microservices:
+  - name: service-a
+    build_path: "/home/unknown/Desktop/Phase_02_projects/Project_010/services/service-a"
+    image: service-a:latest
+    host_port: 8001
+    container_port: 80
+    metrics_path: "/metrics"
+
+  - name: service-b
+    build_path: "/home/unknown/Desktop/Phase_02_projects/Project_010/services/service-b"
+    image: service-b:latest
+    host_port: 8002
+    container_port: 80
+    metrics_path: "/metrics"

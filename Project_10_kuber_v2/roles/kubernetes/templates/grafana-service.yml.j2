@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana
+  namespace: {{ k8s_namespace }}
+spec:
+  type: NodePort
+  ports:
+    - port: {{ grafana_port }}
+      targetPort: {{ grafana_port }}
+      nodePort: 30030
+  selector:
+    app: grafana

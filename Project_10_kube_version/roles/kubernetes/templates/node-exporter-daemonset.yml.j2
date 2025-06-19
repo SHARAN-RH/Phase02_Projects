@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: node-exporter
+  namespace: {{ k8s_namespace }}
+spec:
+  selector:
+    matchLabels:
+      app: node-exporter
+  template:
+    metadata:
+      labels:
+        app: node-exporter
+    spec:
+      containers:
+        - name: node-exporter
+          image: {{ node_exporter_image }}
+          imagePullPolicy: IfNotPresent
+          args:
+            - --web.listen-address=:{{ node_exporter_port }}
+          ports:
+            - containerPort: {{ node_exporter_port }}

@@ -1,0 +1,51 @@
+---
+# roles/grafana/tasks/main.yml
+
+- name: Create build context
+  file:
+    path: "{{ role_path }}/build"
+    state: directory
+
+- name: Create provisioning directory
+  file:
+    path: "{{ role_path }}/build/provisioning"
+    state: directory
+
+- name: Create provisioning datasources directory
+  file:
+    path: "{{ role_path }}/build/provisioning/datasources"
+    state: directory
+
+- name: Render Grafana datasource provisioning
+  template:
+    src: provisioning/datasources/datasource.yml.j2
+    dest: "{{ role_path }}/build/provisioning/datasources/datasource.yml"
+
+- name: Render Grafana Dockerfile
+  template:
+    src: Dockerfile.j2
+    dest: "{{ role_path }}/build/Dockerfile"
+
+- name: Build Grafana Docker image
+  docker_image:
+    name: custom_grafana:latest
+    source: build
+    build:
+      path: "{{ role_path }}/build"
+    force_source: true
+
+- name: Remove existing Grafana container
+  command: docker rm -f grafana
+  ignore_errors: true
+
+- name: Run Grafana container (override entrypoint)
+  command: >
+    docker run -d
+      --name grafana
+      --network monitoring_net
+      -p {{ grafana_port }}:{{ grafana_port }}
+      custom_grafana:latest
+      /usr/share/grafana/bin/grafana-server
+      --homepath=/usr/share/grafana
+      --config=/usr/share/grafana/conf/defaults.ini
+      --packaging=tar

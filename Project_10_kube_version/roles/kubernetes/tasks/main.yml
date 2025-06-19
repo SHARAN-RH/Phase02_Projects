@@ -1,0 +1,52 @@
+---
+# roles/kubernetes/tasks/main.yml
+
+- name: Ensure Kubernetes namespace exists
+  k8s:
+    state: present
+    definition: "{{ lookup('template', 'namespace.yml.j2') }}"
+
+- name: Deploy Node Exporter DaemonSet
+  k8s:
+    state: present
+    definition: "{{ lookup('template', 'node-exporter-daemonset.yml.j2') }}"
+
+- name: Expose Node Exporter as a Service
+  k8s:
+    state: present
+    definition: "{{ lookup('template', 'node-exporter-service.yml.j2') }}"
+
+- name: Create Prometheus ConfigMap
+  k8s:
+    state: present
+    definition: "{{ lookup('template', 'prometheus-configmap.yml.j2') }}"
+
+- name: Deploy Prometheus Deployment
+  k8s:
+    state: present
+    definition: "{{ lookup('template', 'prometheus-deployment.yml.j2') }}"
+
+- name: Expose Prometheus Service
+  k8s:
+    state: present
+    definition: "{{ lookup('template', 'prometheus-service.yml.j2') }}"
+
+- name: Deploy Grafana Deployment
+  k8s:
+    state: present
+    definition: "{{ lookup('template', 'grafana-deployment.yml.j2') }}"
+
+- name: Expose Grafana Service
+  k8s:
+    state: present
+    definition: "{{ lookup('template', 'grafana-service.yml.j2') }}"
+
+- name: Deploy microservice A
+  k8s:
+    state: present
+    definition: "{{ lookup('template', 'service-a.yml.j2') }}"
+
+- name: Deploy microservice B
+  k8s:
+    state: present
+    definition: "{{ lookup('template', 'service-b.yml.j2') }}"
