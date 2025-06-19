@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ansible-pod
+spec:
+  containers:
+    - name: ansible-container
+      image: ansible-pod:latest
+      imagePullPolicy: Never         # <-- This line is important
+      command: ["/bin/bash", "-c", "sleep infinity"]
+      tty: true

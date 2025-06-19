@@ -1,0 +1,32 @@
+---
+# roles/node_exporter/tasks/main.yml
+
+- name: Create build context directory
+  file:
+    path: "{{ role_path }}/build"
+    state: directory
+
+- name: Render Node Exporter Dockerfile
+  template:
+    src: Dockerfile.j2
+    dest: "{{ role_path }}/build/Dockerfile"
+
+- name: Build Node Exporter Docker image
+  docker_image:
+    name: custom_node_exporter:latest
+    source: build
+    build:
+      path: "{{ role_path }}/build"
+    force_source: true
+
+- name: Remove existing node_exporter container (if any)
+  command: docker rm -f node_exporter
+  ignore_errors: true
+
+- name: Run node_exporter container
+  command: >
+    docker run -d
+      --name node_exporter
+      --network monitoring_net
+      -p {{ node_exporter_port }}:{{ node_exporter_port }}
+      custom_node_exporter:latest

@@ -1,0 +1,22 @@
+- name: Deploy app container on remote server
+  hosts: all
+  tasks:
+    - name: Stop old container (if any)
+      shell: docker rm -f myapp || true
+
+    - name: Ensure destination directory exists
+      file:
+        path: /home/test/myapp/
+        state: directory
+
+    - name: Copy app.py and Dockerfile to remote
+      copy:
+        src: ../
+        dest: /home/test/myapp/
+        mode: preserve
+
+    - name: Build Docker image on remote
+      shell: docker build -t myapp:latest /home/test/myapp/
+
+    - name: Run new container
+      shell: docker run -d --name myapp -p 80:5000 myapp:latest

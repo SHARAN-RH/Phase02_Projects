@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ansible
+  namespace: cide
+spec:
+  containers:
+    - name: ansible
+      image: willhallonline/ansible:latest
+      command: ["sleep", "infinity"]
+      tty: true

@@ -1,0 +1,11 @@
+- hosts: localhost
+  become: true
+  tasks:
+    - name: Stop existing container (if running)
+      shell: docker stop p2p8 || true
+
+    - name: Remove old container (if exists)
+      shell: docker rm p2p8 || true
+
+    - name: Run new p2p8 container
+      shell: docker run -d --name p2p8 -p 5001:5001 p2p8

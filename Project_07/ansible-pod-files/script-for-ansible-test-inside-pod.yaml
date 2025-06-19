@@ -1,0 +1,8 @@
+- name: Sample Playbook on localhost
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Create a test file
+      file:
+        path: /root/testfile.txt
+        state: touch

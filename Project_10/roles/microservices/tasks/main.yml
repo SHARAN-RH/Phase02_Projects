@@ -1,0 +1,27 @@
+---
+- name: Ensure Docker network exists
+  docker_network:
+    name: monitoring_net
+    state: present
+
+- name: Build microservice images
+  docker_image:
+    name: "{{ item.image }}"
+    source: build
+    build:
+      path: "{{ item.build_path }}"
+    force_source: true
+  loop: "{{ microservices }}"
+
+- name: Stop & remove any existing microservice container
+  command: docker rm -f {{ item.name }}
+  ignore_errors: true
+  loop: "{{ microservices }}"
+
+- name: Run microservice containers via Docker CLI
+  command: >
+    docker run -d --name {{ item.name }}
+      --network monitoring_net
+      -p {{ item.host_port }}:{{ item.container_port }}
+      {{ item.image }}
+  loop: "{{ microservices }}"

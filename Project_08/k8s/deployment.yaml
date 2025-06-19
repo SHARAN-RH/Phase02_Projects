@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: p2p8
+  template:
+    metadata:
+      labels:
+        app: p2p8
+    spec:
+      containers:
+        - name: flask-container
+          image: p2p8:123
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 5001

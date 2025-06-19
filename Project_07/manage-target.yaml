@@ -1,0 +1,7 @@
+- name: Configure Ubuntu SSH Target
+  hosts: all
+  tasks:
+    - name: Create a file on the target pod
+      file:
+        path: /root/managed-by-ansible.txt
+        state: touch

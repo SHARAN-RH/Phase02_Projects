@@ -1,0 +1,8 @@
+- hosts: localhost
+  become: false
+  tasks:
+    - name: Apply K8s deployment
+      shell: kubectl apply -f ../k8s/deployment.yaml
+
+    - name: Apply K8s service
+      shell: kubectl apply -f ../k8s/service.yaml

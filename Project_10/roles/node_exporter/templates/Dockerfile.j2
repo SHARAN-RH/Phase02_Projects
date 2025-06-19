@@ -1,0 +1,11 @@
+FROM alpine:3.18
+
+RUN apk add --no-cache wget \
+ && wget -O /tmp/node_exporter.tar.gz "{{ node_exporter_binary_url }}" \
+ && tar xzf /tmp/node_exporter.tar.gz -C /tmp \
+ && mv /tmp/{{ node_exporter_unpacked_dir }}/node_exporter /node_exporter \
+ && chmod +x /node_exporter \
+ && rm -rf /tmp/node_exporter.tar.gz /tmp/{{ node_exporter_unpacked_dir }}
+
+EXPOSE {{ node_exporter_port }}
+ENTRYPOINT ["/node_exporter"]

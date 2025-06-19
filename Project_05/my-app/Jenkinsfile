@@ -1,0 +1,51 @@
+pipeline {
+    agent any
+
+    environment {
+        IMAGE_NAME = "myapp"
+    }
+
+    stages {
+        stage('Clone Code') {
+            steps {
+                git branch: 'main', url: 'https://github.com/SHARAN-RH/Phase02_Project05.git'
+            }
+        }
+
+        stage('Generate Dockerfile') {
+            steps {
+                script {
+                    writeFile file: 'my-app/Dockerfile', text: '''
+FROM python:3.9-slim
+
+WORKDIR /app
+COPY app.py /app
+
+RUN pip install flask
+
+EXPOSE 5000
+CMD ["python", "app.py"]
+'''
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+		dir('my-app') {  
+                	script {
+                    		docker.build("${IMAGE_NAME}:latest")
+			}
+                }
+            }
+        }
+
+        stage('Deploy with Ansible') {
+            steps {
+                ansiblePlaybook credentialsId: 'ansible-ssh-key',
+                                 inventory: 'my-app/ansible/inventory',
+                                 playbook: 'my-app/ansible/deploy.yml'
+            }
+        }
+    }
+}
