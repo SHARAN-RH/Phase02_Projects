@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apachephp
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: apachephp
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: apachephp
+    spec:
+      containers:
+      - name: apachephp
+        image: apachephp:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 80
+

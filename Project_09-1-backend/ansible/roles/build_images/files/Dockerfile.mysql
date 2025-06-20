@@ -1,0 +1,15 @@
+FROM ubuntu:24.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install MySQL server
+RUN apt-get update && apt-get install -y mysql-server && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Allow remote connections (optional, for testing)
+RUN sed -i 's/bind-address.*/bind-address = 0.0.0.0/' /etc/mysql/mysql.conf.d/mysqld.cnf
+
+EXPOSE 3306
+
+CMD ["mysqld"]
+
